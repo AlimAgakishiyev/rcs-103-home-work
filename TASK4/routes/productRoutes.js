@@ -43,7 +43,7 @@ router.delete("/:id", (req, res) => {
     if (index !== -1) {
         const deletedProduct = products.splice(index, 1);
         writeData(products);
-        res.json(deletedProduct[0]); // Return the deleted product
+        res.json(deletedProduct[0]);
     } else {
         res.status(404).json({ message: "Product not found" });
     }
