@@ -39,7 +39,7 @@
         const editBasket = (id) => {
             console.log(`Edit button clicked for product ID: ${id}`);
         };
-
+    
         const deleteBasket = (id) => {
             fetch(`/baskets/${id}`, {
                 method: "DELETE"
@@ -51,8 +51,8 @@
             })
             .catch(err => console.error(err));
         };
-
-        const addToFavorites = (id) => {
+    
+        const addToFavorite = (id) => { 
             fetch(`/favorites/add/${id}`, {
                 method: "GET"
             })
@@ -64,5 +64,6 @@
             .catch(err => console.error(err));
         };
     </script>
+    
 </body>
 </html>
