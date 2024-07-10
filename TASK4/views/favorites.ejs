@@ -49,6 +49,7 @@
             .then(product => {
                 console.log(`Deleted product:`, product);
                 window.location.reload();
+                window.location.reload(); 
             })
             .catch(err => console.error("Error deleting product:", err));
         };
