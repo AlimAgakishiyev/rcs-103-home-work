@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/styles.css">
+    <title>Users</title>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/products">Products</a></li>
+            <li><a href="/users">Users</a></li>
+            <li><a href="/baskets">Baskets</a></li>
+            <li><a href="/favorites">Favorites</a></li>
+            <li><a href="/users/login">Login</a></li>
+            <li><a href="/users/register">Register</a></li>
+        </ul>
+    </nav>
+    <div class="container">
+        <h1>Users</h1>
+        <div class="product-form">
+            <h2>Add New User</h2>
+            <form id="productForm">
+                <input type="text" name="username" placeholder="Name" required>
+                <input type="email" name="email" placeholder="Email" required>
+                <input type="password" name="password" placeholder="Password" required>
+                <button class="add-button" type="submit">Add User</button>
+            </form>
+        </div>
+        <div class="product-list">
+            <% users.forEach(user => { %>
+                <div class="card">
+                    <h3><%= user.username %></h3>
+                    <p>Email: <%= user.email %></p>
+                    <p>Password: <%= user.password %></p>
+                    <button class="edit-button" onclick="openEditForm('<%= user._id %>', '<%= user.username %>', '<%= user.email %>')">Edit</button>
+                    <button class="delete-button" onclick="deleteUser('<%= user._id %>')">Delete</button>
+                </div>
+            <% }) %>
+        </div>
+
+        <!-- Edit Form -->
+        <div id="editFormContainer" style="display: none;">
+            <h2>Edit User</h2>
+            <form id="editForm">
+                <input type="hidden" id="editUserId">
+                <input type="text" id="editUsername" placeholder="Name" required>
+                <input type="email" id="editEmail" placeholder="Email" required>
+                <input type="password" id="editPassword" placeholder="Password" required>
+                <button class="edit-button" type="submit">Save Changes</button>
+                <button type="button" onclick="closeEditForm()">Cancel</button>
+            </form>
+        </div>
+
+        <script>
+            const forum = document.querySelector("#productForm");
+            forum.addEventListener("submit", (e) => {
+                e.preventDefault();
+                const formData = new FormData(e.target);
+                const newUser = {
+                    username: formData.get("username"),
+                    email: formData.get("email"),
+                    password: formData.get("password")
+                };
+                fetch("/users", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(newUser)
+                })
+                .then(res => res.json())
+                .then(user => {
+                    window.location.reload();
+                })
+                .catch(err => console.error('Error:', err));
+            });
+
+            const deleteUser = (id) => {
+                fetch(`/users/${id}`, {
+                    method: "DELETE"
+                })
+                .then(res => res.json())
+                .then(() => {
+                    window.location.reload();
+                })
+                .catch(err => console.error('Error:', err));
+            };
+
+            const openEditForm = (id, username, email) => {
+                document.getElementById('editUserId').value = id;
+                document.getElementById('editUsername').value = username;
+                document.getElementById('editEmail').value = email;
+                document.getElementById('editFormContainer').style.display = 'block';
+            };
+
+            const closeEditForm = () => {
+                document.getElementById('editFormContainer').style.display = 'none';
+            };
+
+            const editForm = document.querySelector("#editForm");
+            editForm.addEventListener("submit", (e) => {
+                e.preventDefault();
+                const id = document.getElementById('editUserId').value;
+                const updatedUser = {
+                    username: document.getElementById('editUsername').value,
+                    email: document.getElementById('editEmail').value,
+                    password: document.getElementById('editPassword').value
+                };
+                fetch(`/users/${id}`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(updatedUser)
+                })
+                .then(res => res.json())
+                .then(() => {
+                    window.location.reload();
+                })
+                .catch(err => console.error('Error:', err));
+            });
+        </script>
+    </body>
+</html>
